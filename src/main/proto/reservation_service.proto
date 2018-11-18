@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package reservations.v1;
+
+// Creates separate .java files for message and service
+// instead of creating them inside the class defined by
+// java_outer_classname
+option java_multiple_files = true;
+
+// Class that will contain descriptor
+option java_outer_classname = "ReservationServiceProto";
+
+// The package where the generated classes will reside
+option java_package = "nl.toefel.reservations.v1";
+
+import "google/protobuf/empty.proto";
+
+service ReservationService {
+
+    rpc CreateReservation(CreateReservationRequest) returns (Reservation) { }
+
+    rpc GetReservation(GetReservationRequest) returns (Reservation) { }
+
+    // lists all the reservations, use query params on venue or timestamp to filter the resultset.
+    rpc ListReservations(ListReservationsRequest) returns (stream Reservation) { }
+
+    rpc DeleteReservation(DeleteReservationRequest) returns (google.protobuf.Empty) { }
+
+}
+
+message Reservation {
+    string id = 1;
+    string title = 2;
+    string venue = 3;
+    string room = 4;
+    string timestamp = 5;
+    repeated Person attendees = 6;
+}
+
+message Person {
+    string ssn = 1;
+    string firstName = 2;
+    string lastName = 3;
+}
+
+message CreateReservationRequest {
+    Reservation reservation = 2;
+}
+
+message CreateReservationResponse {
+    Reservation reservation = 1;
+}
+
+message GetReservationRequest {
+    string id = 1;
+}
+
+message ListReservationsRequest {
+    string venue = 1;
+    string timestamp = 2;
+    string room = 3;
+
+    Attendees attendees = 4;
+
+    message Attendees {
+        repeated string lastName = 1;
+    }
+}
+
+message DeleteReservationRequest {
+    string id = 1;
+}
